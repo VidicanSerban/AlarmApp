@@ -15,14 +15,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val button = findViewById<Button>(R.id.btn)
+        val editText = findViewById<EditText>(R.id.editTextNumber)
+        fun isNumber(sec: String?): Boolean{
+            return  if(sec.isNullOrBlank()) false
+            else  sec.all{
+                Character.isDigit(it)
+            }
+        }
         button.setOnClickListener{
-            val editText = findViewById<EditText>(R.id.editTextNumber)
-            var sec: Int = editText.text.toString().toInt()
+            var sec = editText.text.toString()
             var i = Intent(applicationContext, MyBroadcastReceiver::class.java)
-            var pi = PendingIntent.getBroadcast(applicationContext, 11, i,PendingIntent.FLAG_IMMUTABLE)
-            var am: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (sec*1000), pi)
-            Toast.makeText(applicationContext, "Alarm is set for $sec Seconds", Toast.LENGTH_LONG).show()
+            if(isNumber(sec))
+            {
+                var sec: Int = editText.text.toString().toInt()
+                var pi = PendingIntent.getBroadcast(applicationContext, 11, i,PendingIntent.FLAG_IMMUTABLE)
+                var am: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (sec*1000), pi)
+                Toast.makeText(applicationContext, "Alarm is set for $sec Seconds", Toast.LENGTH_LONG).show()
+            }
+            else
+                Toast.makeText(applicationContext, "Enter a valid value", Toast.LENGTH_SHORT).show()
         }
     }
 }
